@@ -1,0 +1,11 @@
+language: node_js
+node_js: node
+services:
+- mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: ntYYR1BcAs/gukZcbOoJW9802NvQBKY+/65jw5Jo+hlALtL3eJCXNR9Az2vQv/HZVccuuacoxTFvTiLOCU1YgzMSoLpyJgGMDyloBBiQ08h6oK1h4G3F9P9dY9xuA1sy5IsleuGZ6gHwlVsz1/5e48tUaRTnR0Ld3tgocvo/V69/qlCRXBDS1O+I969aFXlDuKObNBHVxr5LiMb67eqRuRMr3volSTnpa11oZd81Ibdel4oZ7K4u+WIa7W1vg0U6zmIpo4wHI3Qjf40Ew4C0Rr1Z3cv2Ql1z+xDZ1q5HjO/0kDAbJKAXbPB/PhywM0ZWi0fGwp77tpnvjSnMVDAbybj/i6dqiIkJiWTAxmdROVZcUEMGSzrtIAwy/gT6DZwtkhCQqN7VLplkbNJMKO4xxcrWWo49YB/xbys/2Jg97ucN/QT5TP+9kDB3YI+bB+fJTJeN9QqVVQUM1wbU3K5bXebQ3/s/FV8ckI86jra/D+Z3mksBWzxdbbXMmpOXjdPALUtXKH/46nFdadCsqw0I9oTk4wclEhueJDoRsye5/VNl5HqlKrzvWVDAshIVK6kMLsWPJAPEhDChUJcneaxTFZtf/RFqlTyfhYZc2iuBumiI9K94G+GvkjG1f32vyfGr1Qcu8+lvgX5AJtNOPDKqftXipQT1zTNlfboBHfab62g=
+  app: peaceful-garden-13000
+  on:
+    repo: tstirtz/swapify-api
