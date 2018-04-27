@@ -9,7 +9,7 @@ const jsonParser = bodyParser.json();
 // require User
 
 router.post('/', jsonParser, (req, res) => {
-  const requiredFields = ['username', 'password'];
+  const requiredFields = ['username', 'password', 'firstName', 'lastName', 'email'];
   for (let i = 0; i < requiredFields.length; i += 1) {
     if (!(requiredFields[i] in req.body)) {
       return res.status(422).json({
@@ -21,7 +21,7 @@ router.post('/', jsonParser, (req, res) => {
     }
   }
 
-  const fieldsToTrim = ['username', 'password'];
+  const fieldsToTrim = ['username', 'password', 'email'];
   const nonTrimmedFields = fieldsToTrim.find(field => req.body[field].trim() !== req.body[field]);
 
   if (nonTrimmedFields) {
@@ -78,6 +78,11 @@ router.post('/', jsonParser, (req, res) => {
     })
     .then(hash => Users
       .create({
+        name: {
+          first: req.body.firstName,
+          last: req.body.lastName,
+        },
+        email: req.body.email,
         username: req.body.username,
         password: hash,
       })
