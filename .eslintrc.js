@@ -1,3 +1,7 @@
 module.exports = {
-    "extends": "airbnb-base"
+    "extends": "airbnb-base",
+    "rules": {
+      "prefer-promise-reject-errors": ["error", {"allowEmptyReject": true}],
+      "func-names": ["error", "never"]
+    }
 };
