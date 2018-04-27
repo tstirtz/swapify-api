@@ -9,7 +9,7 @@ const jsonParser = bodyParser.json();
 // require User
 
 router.post('/', jsonParser, (req, res) => {
-  const requiredFields = ['userName', 'password'];
+  const requiredFields = ['username', 'password'];
   for (let i = 0; i < requiredFields.length; i += 1) {
     if (!(requiredFields[i] in req.body)) {
       return res.status(422).json({
@@ -21,7 +21,7 @@ router.post('/', jsonParser, (req, res) => {
     }
   }
 
-  const fieldsToTrim = ['userName', 'password'];
+  const fieldsToTrim = ['username', 'password'];
   const nonTrimmedFields = fieldsToTrim.find(field => req.body[field].trim() !== req.body[field]);
 
   if (nonTrimmedFields) {
@@ -36,7 +36,7 @@ router.post('/', jsonParser, (req, res) => {
   // check for correct length of userName and password
 
   const sizedFields = {
-    userName: {
+    username: {
       min: 1,
     },
     password: {
@@ -61,7 +61,7 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
   return Users
-    .find({ userName: req.body.userName })
+    .find({ username: req.body.userName })
     .count()
     .then((count) => {
       if (count > 0) {
@@ -69,7 +69,7 @@ router.post('/', jsonParser, (req, res) => {
           code: 422,
           reason: 'ValidationError',
           message: 'Username already taken',
-          location: 'userName',
+          location: 'username',
         }));
       }
       // hashPassword is a static function defined on the userSchema which
@@ -78,7 +78,7 @@ router.post('/', jsonParser, (req, res) => {
     })
     .then(hash => Users
       .create({
-        userName: req.body.userName,
+        username: req.body.username,
         password: hash,
       })
       .then(user => res.status(201).json(user.userData()))
