@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const {CLIENT_ORIGIN} = require('./config');
-const cors = require('./cors');
+const cors = require('cors');
 
 app.use(
     cors({
