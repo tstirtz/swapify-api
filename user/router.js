@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const bodyParser = require('body-parser');
-const { Users } = require('./router');
+const { Users } = require('./models');
 
 const jsonParser = bodyParser.json();
 
@@ -86,7 +86,7 @@ router.post('/', jsonParser, (req, res) => {
         username: req.body.username,
         password: hash,
       })
-      .then(user => res.status(201).json(user.userData()))
+      .then(user => res.status(201).json(user.serialize()))
       .catch((err) => {
         console.log(err);
         if (err.reason === 'ValidationError') {
