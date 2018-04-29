@@ -61,16 +61,16 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
   return Users
-    .find({ username: req.body.userName })
-    .count()
-    .then((count) => {
-      if (count > 0) {
-        return Promise.reject(new Error({
+    .find({ username: req.body.username })
+    // .count()
+    .then((users) => {
+      if (users.length > 0) {
+        return Promise.reject({
           code: 422,
           reason: 'ValidationError',
           message: 'Username already taken',
           location: 'username',
-        }));
+        });
       }
       // hashPassword is a static function defined on the userSchema which
       // uses bcryptjs to hash the password
@@ -88,7 +88,6 @@ router.post('/', jsonParser, (req, res) => {
       })
       .then(user => res.status(201).json(user.serialize()))
       .catch((err) => {
-        console.log(err);
         if (err.reason === 'ValidationError') {
           res.status(err.code).json(err);
         }
