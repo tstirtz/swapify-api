@@ -8,6 +8,11 @@ describe('/sign-up end point', () => {
   beforeAll(() => runServer(TEST_DATABASE_URL));
   beforeEach(() => Users.remove({}).exec());
   afterAll(() => closeServer());
+
+  process.on('unhandledRejection', (reason) => {
+    console.error(reason);
+    process.exit(1);
+  });
   it('Should return new user', () => {
     const user = {
       firstName: 'Test',
