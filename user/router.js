@@ -4,13 +4,13 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const { Users } = require('./models');
 
+
 const jsonParser = bodyParser.json();
 
-// require User
-
 router.post('/', jsonParser, (req, res) => {
-  const requiredFields = ['username', 'password', 'firstName', 'lastName', 'email'];
+  const requiredFields = ['first', 'last', 'email', 'username', 'password'];
   for (let i = 0; i < requiredFields.length; i += 1) {
+    console.log(req);
     if (!(requiredFields[i] in req.body)) {
       return res.status(422).json({
         code: 422,
@@ -76,22 +76,22 @@ router.post('/', jsonParser, (req, res) => {
       // uses bcryptjs to hash the password
       return Users.hashPassword(req.body.password);
     })
-    .then(hash => Users
-      .create({
+    .then(hash =>
+      Users.create({
         name: {
-          first: req.body.firstName,
-          last: req.body.lastName,
+          first: req.body.first,
+          last: req.body.last,
         },
         email: req.body.email,
         username: req.body.username,
         password: hash,
-      })
-      .then(user => res.status(201).json(user.serialize()))
-      .catch((err) => {
-        if (err.reason === 'ValidationError') {
-          res.status(err.code).json(err);
-        }
-        res.status(500).send({ code: 500, message: 'Internal server error' });
-      }));
+      }))
+    .then(user => res.status(201).json(user.serialize()))
+    .catch((err) => {
+      if (err.reason === 'ValidationError') {
+        return res.status(err.code).json(err);
+      }
+      res.status(500).send({ code: 500, message: 'Internal server error' });
+    });
 });
 module.exports = router;
