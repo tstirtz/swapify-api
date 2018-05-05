@@ -1,7 +1,6 @@
+const mongoose = require ('mongoose');
 const app = require('./app');
-const { PORT } = require('./config');
-const mongoose = require('mongoose');
-
+const { PORT, DATABASE_URL } = require('./config');
 
 let port;
 let server;
