@@ -26,7 +26,16 @@ userSchema.methods.serialize = function () {
   };
 };
 
-userSchema.methods.validatePassword = password => bcrypt.compare(password, this.password);
+userSchema.methods.forAuthToken = function () {
+  return {
+    username: this.username,
+    _id: this._id
+  };
+};
+
+userSchema.methods.validatePassword = function(password) {
+  return bcrypt.compare(password, this.password);
+}
 
 userSchema.statics.hashPassword = password => bcrypt.hash(password, 10);
 
