@@ -5,7 +5,7 @@ const { TEST_DATABASE_URL } = require('../config');
 const { Users } = require('../user/models');
 
 describe('/sign-up end point', () => {
-  beforeAll(() => runServer(TEST_DATABASE_URL));
+  beforeAll(() => runServer(TEST_DATABASE_URL, 4000));
   beforeEach(() => Users.remove({}).exec());
   afterAll(() => closeServer());
 
@@ -15,8 +15,8 @@ describe('/sign-up end point', () => {
   });
   it('Should return new user', () => {
     const user = {
-      firstName: 'Test',
-      lastName: 'Test',
+      first: 'Test',
+      last: 'Test',
       email: 'test@test.com',
       username: 'test123',
       password: 'anothertest',
@@ -39,7 +39,7 @@ describe('/sign-up end point', () => {
   });
   it('Should return error due to missing field', () => {
     const user = {
-      lastName: 'Test',
+      last: 'Test',
       email: 'test@test.com',
       username: 'test123',
       password: 'anothertest',
@@ -54,8 +54,8 @@ describe('/sign-up end point', () => {
 
   it('Should return error for password with leading or trailing whitespace', () => {
     const user = {
-      firstName: 'Test',
-      lastName: 'Test',
+      first: 'Test',
+      last: 'Test',
       email: 'test@test.com',
       username: 'test123',
       password: ' anothertest ',
@@ -73,8 +73,8 @@ describe('/sign-up end point', () => {
       tooLargePassword += 't';
     }
     const user = {
-      firstName: 'Test',
-      lastName: 'Test',
+      first: 'Test',
+      last: 'Test',
       email: 'test@test.com',
       username: 'test123',
       password: tooLargePassword,
@@ -88,8 +88,8 @@ describe('/sign-up end point', () => {
   });
   it('Should return error if password is too short', () => {
     const user = {
-      firstName: 'Test',
-      lastName: 'Test',
+      first: 'Test',
+      last: 'Test',
       email: 'test@test.com',
       username: 'test123',
       password: 'test',
