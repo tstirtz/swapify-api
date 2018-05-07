@@ -10,7 +10,6 @@ const jsonParser = bodyParser.json();
 router.post('/', jsonParser, (req, res) => {
   const requiredFields = ['first', 'last', 'email', 'username', 'password'];
   for (let i = 0; i < requiredFields.length; i += 1) {
-    console.log(req);
     if (!(requiredFields[i] in req.body)) {
       return res.status(422).json({
         code: 422,
