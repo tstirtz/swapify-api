@@ -5,9 +5,16 @@ const { TEST_DATABASE_URL } = require('../config');
 const { Users } = require('../user/models');
 
 describe('/sign-up end point', () => {
-  beforeAll(() => runServer(TEST_DATABASE_URL, 4000));
-  beforeEach(() => Users.remove({}).exec());
-  afterAll(() => closeServer());
+  beforeAll(() => {
+    return runServer(TEST_DATABASE_URL, 4000);
+  });
+  beforeEach(() => {
+    console.log('Deleting db');
+    return Users.deleteMany();
+  });
+  afterAll(() => {
+    return closeServer();
+  });
 
   process.on('unhandledRejection', (reason) => {
     console.error(reason);
