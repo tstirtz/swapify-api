@@ -1,9 +1,6 @@
-const mongoose = require ('mongoose');
+const mongoose = require('mongoose');
+const { PORT } = require('./config');
 const app = require('./app');
-const { PORT, DATABASE_URL } = require('./config');
-
-let port;
-let server;
 
 function runServer(databaseUrl, port=PORT){
   return new Promise((resolve, reject) => {
@@ -13,15 +10,15 @@ function runServer(databaseUrl, port=PORT){
       }
       console.log(`mongoose is connected to ${databaseUrl}`);
       server = app.listen(port, () => {
-        console.log(`Your app is listening on port ${port}`);
+      console.log(`Your app is listening on port ${port}`);
       });
       resolve();
     })
     .catch(err => {
       mongoose.disconnect();
       reject(err);
-    })
-  })
+    });
+  });
 }
 
 function closeServer(){
@@ -38,10 +35,6 @@ function closeServer(){
       });
     });
   });
-}
-
-if (require.main === module) {
-  runServer(DATABASE_URL).catch(err=> console.log(err));
 }
 
 module.exports = { runServer, closeServer };
