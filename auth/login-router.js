@@ -22,7 +22,7 @@ const createAuthToken = user =>
 router.post('/', localAuth, (req, res) => {
   console.log("login router called");
   const authToken = createAuthToken(req.user.forAuthToken());
-  res.json({ id: req.user._id, jwt: authToken });
+  res.json({ id: req.user._id, jwt: authToken, username: req.user.username });
 });
 
 module.exports = router;
