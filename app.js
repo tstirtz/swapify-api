@@ -8,7 +8,7 @@ const { CLIENT_ORIGIN } = require('./config');
 const cors = require('cors');
 const usersRouter = require('./user/router');
 const loginRouter = require('./auth/login-router');
-const neededBookRouter = require('./user-books/needed-book-router');
+const bookToSwapRouter = require('./user-books/book-swap-router');
 const { localStrategy } = require('./auth/strategies');
 
 const app = express();
@@ -27,6 +27,6 @@ app.get('/', (req, res) => {
 
 app.use('/sign-up', usersRouter);
 app.use('/login', jsonParser, loginRouter);
-app.use('/needed-book', jsonParser, neededBookRouter);
+app.use('/book-to-swap', jsonParser, bookToSwapRouter);
 
 module.exports = app;

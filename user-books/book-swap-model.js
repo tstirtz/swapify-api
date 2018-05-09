@@ -4,19 +4,19 @@ const { DATABASE_URL } = require('../config');
 mongoose.Promise = global.Promise;
 mongoose.connect(DATABASE_URL);
 
-const neededBookSchema = mongoose.Schema({
+const bookToSwapSchema = mongoose.Schema({
   userId: String,
   title: String,
   author: String,
 });
 
-neededBookSchema.methods.serialize = function () {
+bookToSwapSchema.methods.serialize = function () {
   return {
     title: this.title,
     author: this.author,
   };
 };
 
-const NeededBook = mongoose.model('NeededBook', neededBookSchema);
+const BookToSwap = mongoose.model('BookToSwap', bookToSwapSchema);
 
-module.exports = { NeededBook };
+module.exports = { BookToSwap };

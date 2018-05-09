@@ -1,10 +1,11 @@
 const express = require('express');
+
 const router = express.Router();
-const bodyParser = require('body-parser');
-const { NeededBook } = require('./needed-book-model');
+// const bodyParser = require('body-parser');
+const { BookToSwap } = require('./book-swap-model');
 
 router.post('/', (req, res) =>
-  NeededBook.findOne({ userId: req.userId, title: req.title })
+  BookToSwap.findOne({ userId: req.userId, title: req.title })
     .then((item) => {
       if (item) {
         return res.status(422).json({
@@ -12,7 +13,7 @@ router.post('/', (req, res) =>
           message: 'Already exists as a needed book',
         });
       }
-      return NeededBook.create({
+      return BookToSwap.create({
         userId: req.userId,
         title: req.title,
         author: req.author,
