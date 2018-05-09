@@ -1,10 +1,16 @@
 const express = require('express');
 
 const router = express.Router();
+const passport = require('passport');
 // const bodyParser = require('body-parser');
 const { BookToSwap } = require('./book-swap-model');
+const { jwtStrategy } = require('../auth/strategies');
 
-router.post('/', (req, res) =>
+const jwtAuth = passport.authenticate('jwt', { session: false });
+
+passport.use(jwtStrategy);
+
+router.post('/', jwtAuth, (req, res) =>
   BookToSwap.findOne({ userId: req.userId, title: req.title })
     .then((item) => {
       if (item) {
