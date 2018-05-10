@@ -10,21 +10,32 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 
 passport.use(jwtStrategy);
 
-router.post('/', jwtAuth, (req, res) =>
-  BookToSwap.findOne({ userId: req.userId, title: req.title })
+router.post('/', jwtAuth, (req, res) => {
+  console.log(req.body.userId);
+  console.log(req.body.title);
+  console.log(req.body.author);
+  return BookToSwap.find({ userId: req.body.userId, title: req.body.title })
     .then((item) => {
-      if (item) {
-        return res.status(422).json({
+      console.log(item);
+      if (item.length > 0) {
+        return Promise.reject({
           code: 422,
           message: 'Already exists as a needed book',
         });
       }
       return BookToSwap.create({
-        userId: req.userId,
-        title: req.title,
-        author: req.author,
+        userId: req.body.userId,
+        title: req.body.title,
+        author: req.body.author,
       });
     }).then(book => res.status(201).json(book.serialize()))
-    .catch(err => console.log(err)));
+    .catch((err) => {
+      console.log(err);
+      if (err.code === 422) {
+        return res.status(err.code).json(err);
+      }
+      return res.status(500).send({ code: 500, message: 'Internal server error' });
+    });
+});
 
 module.exports = router;
