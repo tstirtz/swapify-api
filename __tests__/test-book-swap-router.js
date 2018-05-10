@@ -40,22 +40,20 @@ describe('/book-to-swap end point', () => {
     console.error(reason);
     process.exit(1);
   });
-  it('should return a book', () => {
+  it('should return a book', (done) => {
     const newBook = {
       userId: 'Test123',
       title: 'Enders Game',
       author: 'Orson Scott Card',
-    }
-
+    };
     const expectedBook = {
       title: 'Enders Game',
       author: 'Orson Scott Card',
-    }
-
+    };
     const user = {
       username: 'test123',
       _id: userId,
-    }
+    };
     const authToken = jwt.sign({ user }, JWT_SECRET, {
       subject: user.username,
       expiresIn: JWT_EXPIRY,
@@ -68,6 +66,38 @@ describe('/book-to-swap end point', () => {
       .then((res) => {
         expect(res.status).toEqual(201);
         expect(res.body).toEqual(expectedBook);
+        done();
+      });
+  });
+  it('Should return error message if book already exists for a user', (done) => {
+    const newBook = {
+      userId,
+      title: 'Enders Game',
+      author: 'Orson Scott Card',
+    };
+    const user = {
+      username: 'test123',
+      _id: userId,
+    };
+    const authToken = jwt.sign({ user }, JWT_SECRET, {
+      subject: user.username,
+      expiresIn: JWT_EXPIRY,
+      algorithm: 'HS256',
+    });
+    request(app).post('/book-to-swap')
+      .send(newBook)
+      .set('Authorization', `Bearer ${authToken}`)
+      .then((first) => {
+        console.log(first.body);
+        request(app).post('/book-to-swap')
+          .send(newBook)
+          .set('Authorization', `Bearer ${authToken}`)
+          .then((res) => {
+            console.log(res.body);
+            expect(res.status).toEqual(422);
+            expect(res.body.message).toContain('Already exists as a');
+            done();
+          });
       });
   });
 });
