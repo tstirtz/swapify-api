@@ -9,6 +9,7 @@ const cors = require('cors');
 const usersRouter = require('./user/router');
 const loginRouter = require('./auth/login-router');
 const bookToSwapRouter = require('./user-books/book-swap-router');
+const getUserBooksRouter = require('./user-books/user-books-router');
 const { localStrategy } = require('./auth/strategies');
 
 const app = express();
@@ -28,5 +29,6 @@ app.get('/', (req, res) => {
 app.use('/sign-up', usersRouter);
 app.use('/login', jsonParser, loginRouter);
 app.use('/book-to-swap', jsonParser, bookToSwapRouter);
+app.use('/user-books/:id', getUserBooksRouter);
 
 module.exports = app;
