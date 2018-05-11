@@ -12,6 +12,7 @@ const bookToSwapSchema = mongoose.Schema({
 
 bookToSwapSchema.methods.serialize = function () {
   return {
+    userId: this.userId,
     title: this.title,
     author: this.author,
   };
