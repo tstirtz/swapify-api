@@ -14,6 +14,15 @@ router.post('/', jwtAuth, (req, res) => {
   console.log(req.body.userId);
   console.log(req.body.title);
   console.log(req.body.author);
+  // const requiredFields = ['title', 'author'];
+  // for (let i = 0; i < requiredFields.length; i += 1) {
+  //   if (!(requiredFields[i] in req.body)) {
+  //     return Promise.reject({
+  //       code: 422,
+  //       message: `${field} is required`,
+  //     });
+  //   }
+  // }
   return BookToSwap.find({ userId: req.body.userId, title: req.body.title })
     .then((item) => {
       console.log(item);
@@ -28,7 +37,7 @@ router.post('/', jwtAuth, (req, res) => {
         title: req.body.title,
         author: req.body.author,
       });
-    }).then(book => res.status(201).json(book.serialize()))
+    }).then(book => res.status(201).json('Book added successfully'))
     .catch((err) => {
       console.log(err);
       if (err.code === 422) {
