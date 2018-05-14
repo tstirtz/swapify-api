@@ -15,12 +15,19 @@ router.get('/', jwtAuth, (req, res) => {
   return BookToSwap.find({ userId: `${req.params.id}` })
     .then((books) => {
       if (books.length === 0) {
-        return res.status(204);
+        return Promise.reject({
+          code: 204,
+          message: 'No books were found for the user',
+        });
       }
       return res.status(200).json(books);
     })
     .catch((err) => {
-      console.log(err); res.status(500).json({ message: 'Internal server error. Please try again' })
+      console.log(err);
+      if (err.code === 204) {
+        return res.status(err.code).json(err);
+      }
+      res.status(500).json({ message: 'Internal server error. Please try again' })
     });
 });
 
