@@ -8,10 +8,11 @@ const { Users } = require('../user/models');
 
 describe('/book-to-swap end point', () => {
   let userId;
+  let authToken;
   beforeAll(() => {
     return runServer(TEST_DATABASE_URL, 4000);
   });
-  beforeEach(() => {
+  beforeAll(() => {
     const user = {
       first: 'Test',
       last: 'Test',
@@ -24,7 +25,9 @@ describe('/book-to-swap end point', () => {
       .then((res) => {
         Users.find({})
           .then((foundUser) => {
-            userId = foundUser._id;
+            console.log(foundUser[0]._id);
+            userId = foundUser[0]._id;
+            console.log(userId);
           })
       });
   });
@@ -41,6 +44,7 @@ describe('/book-to-swap end point', () => {
     process.exit(1);
   });
   it('should return a book', (done) => {
+    console.log(userId);
     const newBook = {
       userId: 'Test123',
       title: 'Enders Game',
@@ -54,7 +58,7 @@ describe('/book-to-swap end point', () => {
       username: 'test123',
       _id: userId,
     };
-    const authToken = jwt.sign({ user }, JWT_SECRET, {
+    authToken = jwt.sign({ user }, JWT_SECRET, {
       subject: user.username,
       expiresIn: JWT_EXPIRY,
       algorithm: 'HS256',
@@ -65,7 +69,7 @@ describe('/book-to-swap end point', () => {
       .set('Authorization', `Bearer ${authToken}`)
       .then((res) => {
         expect(res.status).toEqual(201);
-        expect(res.body).toEqual(expectedBook);
+        expect(res.body).toContain('Book added successfully');
         done();
       });
   });
@@ -79,11 +83,11 @@ describe('/book-to-swap end point', () => {
       username: 'test123',
       _id: userId,
     };
-    const authToken = jwt.sign({ user }, JWT_SECRET, {
-      subject: user.username,
-      expiresIn: JWT_EXPIRY,
-      algorithm: 'HS256',
-    });
+    // const authToken = jwt.sign({ user }, JWT_SECRET, {
+    //   subject: user.username,
+    //   expiresIn: JWT_EXPIRY,
+    //   algorithm: 'HS256',
+    // });
     request(app).post('/book-to-swap')
       .send(newBook)
       .set('Authorization', `Bearer ${authToken}`)
@@ -98,6 +102,34 @@ describe('/book-to-swap end point', () => {
             expect(res.body.message).toContain('Already exists as a');
             done();
           });
+      });
+  });
+  it('Should return users books', (done) => {
+    console.log(userId);
+    const newBook = {
+      userId,
+      title: 'Enders Game',
+      author: 'Orson Scott Card',
+    };
+    request(app).post('/book-to-swap')
+      .send(newBook)
+      .set('Authorization', `Bearer ${authToken}`)
+      .then(() => {
+        request(app).get(`/user-books/${userId}`)
+          .set('Authorization', `Bearer ${authToken}`)
+          .then((res) => {
+            expect(res.status).toEqual(200);
+            expect(res.body.length).toBeGreaterThanOrEqual(1);
+            done();
+          });
+      });
+  });
+  it('Should return error if no books are present for a user', (done) => {
+    request(app).get(`/user-books/${userId}`)
+      .set('Authorization', `Bearer ${authToken}`)
+      .then((res) => {
+        expect(res.status).toEqual(204);
+        done();
       });
   });
 });
