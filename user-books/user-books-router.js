@@ -14,12 +14,12 @@ router.get('/', jwtAuth, (req, res) => {
   console.log(req.params.id);
   return BookToSwap.find({ userId: `${req.params.id}` })
     .then((books) => {
-      if (books.length === 0) {
-        return Promise.reject({
-          code: 204,
-          message: 'No books were found for the user',
-        });
-      }
+      // if (books.length === 0) {
+      //   return Promise.reject({
+      //     code: 204,
+      //     message: 'No books were found for the user',
+      //   });
+      // }
       return res.status(200).json(books);
     })
     .catch((err) => {
