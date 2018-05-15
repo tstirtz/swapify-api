@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
-const { DATABASE_URL } = require('../config');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(DATABASE_URL);
 
 const bookToSwapSchema = mongoose.Schema({
   userId: String,

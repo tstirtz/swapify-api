@@ -1,9 +1,7 @@
-const { DATABASE_URL } = require('../config');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(DATABASE_URL);
 
 const userSchema = mongoose.Schema({
   name: {
