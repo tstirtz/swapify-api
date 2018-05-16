@@ -124,11 +124,11 @@ describe('/book-to-swap end point', () => {
           });
       });
   });
-  it('Should return error if no books are present for a user', (done) => {
+  it('Should return empty array if no books are present for a user', (done) => {
     request(app).get(`/user-books/${userId}`)
       .set('Authorization', `Bearer ${authToken}`)
       .then((res) => {
-        expect(res.status).toEqual(204);
+        expect(res.body).toEqual([]);
         done();
       });
   });
