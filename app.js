@@ -12,6 +12,7 @@ const bookToSwapRouter = require('./user-books/book-swap-router');
 const getUserBooksRouter = require('./user-books/user-books-router');
 const searchRouter = require('./search/search-router');
 const sendMessageRouter = require('./messages/send-message-router');
+const getMessagesRouter = require('./messages/get-messages-router');
 const { localStrategy } = require('./auth/strategies');
 
 const app = express();
@@ -34,5 +35,6 @@ app.use('/book-to-swap', jsonParser, bookToSwapRouter);
 app.use('/user-books/:id', getUserBooksRouter);
 app.use('/search', searchRouter);
 app.use('/send-message', jsonParser, sendMessageRouter);
+app.use('/:username/messages', getMessagesRouter);
 
 module.exports = app;
