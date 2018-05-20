@@ -5,7 +5,11 @@ const passport = require('passport');
 const { jwtStrategy } = require('../auth/strategies');
 const { Message } = require('./message-model');
 
-router.post('/', (req, res) => {
+const jwtAuth = passport.authenticate('jwt', { session: false });
+
+passport.use(jwtStrategy);
+
+router.post('/', jwtAuth, (req, res) => {
   const requiredFields = ['to', 'from', 'content', 'timeStamp'];
   requiredFields.forEach((field) => {
     if (!(field in req.body)) {
