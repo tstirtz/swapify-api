@@ -5,7 +5,7 @@ mongoose.Promise = global.Promise;
 const messageSchema = mongoose.Schema({
   to: String,
   from: String,
-  message: String,
+  content: String,
   timeStamp: String,
 });
 
