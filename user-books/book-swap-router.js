@@ -34,6 +34,7 @@ router.post('/', jwtAuth, (req, res) => {
       }
       return BookToSwap.create({
         userId: req.body.userId,
+        username: req.body.username,
         title: req.body.title,
         author: req.body.author,
       });

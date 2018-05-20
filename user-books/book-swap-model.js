@@ -4,6 +4,7 @@ mongoose.Promise = global.Promise;
 
 const bookToSwapSchema = mongoose.Schema({
   userId: String,
+  username: String,
   title: String,
   author: String,
 });
@@ -11,6 +12,7 @@ const bookToSwapSchema = mongoose.Schema({
 bookToSwapSchema.methods.serialize = function () {
   return {
     userId: this.userId,
+    username: this.username,
     title: this.title,
     author: this.author,
   };
