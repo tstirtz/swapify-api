@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 
 const passport = require('passport');
@@ -26,7 +27,7 @@ router.post('/', jwtAuth, (req, res) => {
     content: req.body.content,
     timeStamp: req.body.timeStamp,
   })
-    .then(() => res.status(200).json({ message: 'Message created' }))
+    .then(() => res.status(200).json({ message: 'Message sent' }))
     .catch((err) => {
       if (err.reason === 'ValidationError') {
         return res.status(err.code).json(err);
