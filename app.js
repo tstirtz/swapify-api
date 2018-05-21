@@ -13,6 +13,7 @@ const getUserBooksRouter = require('./user-books/user-books-router');
 const searchRouter = require('./search/search-router');
 const sendMessageRouter = require('./messages/send-message-router');
 const getMessagesRouter = require('./messages/get-messages-router');
+const deleteBookRouter = require('./user-books/delete-book-router');
 const { localStrategy } = require('./auth/strategies');
 
 const app = express();
@@ -36,5 +37,6 @@ app.use('/user-books/:id', getUserBooksRouter);
 app.use('/search', searchRouter);
 app.use('/send-message', jsonParser, sendMessageRouter);
 app.use('/:username/messages', getMessagesRouter);
+app.use('/:bookId/delete-book', deleteBookRouter);
 
 module.exports = app;
