@@ -221,4 +221,33 @@ describe.only('/:bookId/delete-book endpoint', () => {
           });
       });
   });
+  it('Should return null if no book is found to delete', (done) => {
+    const bookId = 'aaaaaaaaaaaaaaaaaaaaaaaa'
+    return request(app).delete(`/${bookId}/delete-book`)
+      .set('Authorization', `Bearer ${authToken}`)
+      .then((res) => {
+        console.log(res.body);
+        expect(res.status).toEqual(200);
+        expect(res.body).toEqual({});
+        done();
+      });
+  });
+  it('Should return unauthorized if jwt is invalid', (done) => {
+    let bookId;
+    BookToSwap.find({})
+      .then((book) => {
+        console.log(book);
+        console.log(book[0]._id);
+        return bookId = book[0]._id;
+      })
+      .then((id) => {
+        request(app).delete(`/${bookId}/delete-book`)
+          .set('Authorization', 'Bearer invalidToken')
+          .then((res) => {
+            // console.log(res);
+            expect(res.status).toEqual(401);
+            done();
+          });
+      });
+  });
 });
