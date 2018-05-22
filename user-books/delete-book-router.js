@@ -12,8 +12,8 @@ passport.use(jwtStrategy);
 
 router.delete('/', (req, res) => {
   BookToSwap.findOneAndRemove({ _id: `${req.params.bookId}` })
-    .then(response => res.status(200).json(response))
-    .catch(err => res.status(err.code).json(err));
+    .then(response => res.status(200).json(response.serialize()))
+    .catch(err => res.status(500).json(err));
 });
 
 module.exports = router;
