@@ -24,9 +24,6 @@ router.get('/', jwtAuth, (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      if (err.code === 204) {
-        return res.status(err.code).json(err);
-      }
       res.status(500).json({ message: 'Internal server error. Please try again' })
     });
 });
