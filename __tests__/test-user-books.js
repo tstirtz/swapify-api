@@ -251,3 +251,34 @@ describe('/:bookId/delete-book endpoint', () => {
       });
   });
 });
+
+describe('/user-books/:id endpoint', () => {
+  it('Should return all books for a user', (done) => {
+    const newBook = {
+      userId: 'Test123',
+      title: 'Enders Game',
+      author: 'Orson Scott Card',
+    };
+    console.log(authToken);
+    request(app).post('/book-to-swap')
+      .send(newBook)
+      .set('Authorization', `Bearer ${authToken}`)
+      .then(() => {
+        request(app).get(`/user-books/${userId}`)
+          .set('Authorization', `Bearer ${authToken}`)
+          .then((res) => {
+            expect(res.status).toEqual(200);
+            done();
+          });
+      });
+  });
+  it('Should return empty array if no books are found for a user', (done) => {
+    request(app).get(`/user-books/${userId}`)
+      .set('Authorization', `Bearer ${authToken}`)
+      .then((res) => {
+        expect(res.status).toEqual(200);
+        expect(res.body).toEqual([]);
+        done();
+      });
+  });
+});
