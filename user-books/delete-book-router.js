@@ -10,10 +10,15 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 
 passport.use(jwtStrategy);
 
-router.delete('/', (req, res) => {
+router.delete('/', jwtAuth, (req, res) => {
   BookToSwap.findOneAndRemove({ _id: `${req.params.bookId}` })
-    .then(response => res.status(200).json(response.serialize()))
-    .catch(err => res.status(500).json(err));
+    .then((response) => {
+      if (response === null) {
+        return res.status(200).send(response);
+      }
+      return res.status(200).json(response.serialize());
+    })
+    .catch(err => res.status(422).json({ message: err.message }));
 });
 
 module.exports = router;
