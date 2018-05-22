@@ -5,14 +5,12 @@ const { runServer, closeServer } = require('../server');
 const { TEST_DATABASE_URL, JWT_SECRET, JWT_EXPIRY } = require('../config');
 const { BookToSwap } = require('../user-books/book-swap-model');
 const { Users } = require('../user/models');
-const deleteBookRouter =require('../user-books/delete-book-router');
 
 
 let userId;
 let authToken;
-beforeAll(() => {
-  return runServer(TEST_DATABASE_URL, 4000);
-});
+
+beforeAll(() => runServer(TEST_DATABASE_URL, 4000));
 beforeAll(() => {
   const user = {
     first: 'Test',
@@ -32,6 +30,19 @@ beforeAll(() => {
         })
     });
 });
+
+beforeAll(() => {
+  const user = {
+    username: 'testUser',
+    _id: userId,
+  };
+  authToken = jwt.sign({ user }, JWT_SECRET, {
+    subject: user.username,
+    expiresIn: JWT_EXPIRY,
+    algorithm: 'HS256',
+  });
+});
+
 afterEach(() => {
   console.log('Deleting db');
   return BookToSwap.deleteMany();
@@ -84,7 +95,7 @@ describe('/book-to-swap end point', () => {
   it('should return a book', (done) => {
     console.log(userId);
     const newBook = {
-      userId: 'Test123',
+      userId: 'testUser',
       title: 'Enders Game',
       author: 'Orson Scott Card',
     };
@@ -92,15 +103,15 @@ describe('/book-to-swap end point', () => {
       title: 'Enders Game',
       author: 'Orson Scott Card',
     };
-    const user = {
-      username: 'test123',
-      _id: userId,
-    };
-    authToken = jwt.sign({ user }, JWT_SECRET, {
-      subject: user.username,
-      expiresIn: JWT_EXPIRY,
-      algorithm: 'HS256',
-    });
+    // const user = {
+    //   username: 'testUser',
+    //   _id: userId,
+    // };
+    // authToken = jwt.sign({ user }, JWT_SECRET, {
+    //   subject: user.username,
+    //   expiresIn: JWT_EXPIRY,
+    //   algorithm: 'HS256',
+    // });
 
     return request(app).post('/book-to-swap')
       .send(newBook)
@@ -117,10 +128,10 @@ describe('/book-to-swap end point', () => {
       title: 'Enders Game',
       author: 'Orson Scott Card',
     };
-    const user = {
-      username: 'test123',
-      _id: userId,
-    };
+    // const user = {
+    //   username: 'testUser',
+    //   _id: userId,
+    // };
     // const authToken = jwt.sign({ user }, JWT_SECRET, {
     //   subject: user.username,
     //   expiresIn: JWT_EXPIRY,
@@ -175,13 +186,13 @@ describe('/book-to-swap end point', () => {
 describe('/:bookId/delete-book endpoint', () => {
   beforeEach(() => {
     const newBook = {
-      userId: 'Test123',
-      username: 'test123',
+      userId: 'testUser',
+      username: 'testUser',
       title: 'Enders Game',
       author: 'Orson Scott Card',
     };
     const user = {
-      username: 'test123',
+      username: 'testUser',
       _id: userId,
     };
     authToken = jwt.sign({ user }, JWT_SECRET, {
@@ -199,8 +210,8 @@ describe('/:bookId/delete-book endpoint', () => {
   it('Should return deleted book object', (done) => {
     let bookId;
     const deletedBook = {
-      userId: 'Test123',
-      username: 'test123',
+      userId: 'testUser',
+      username: 'testUser',
       title: 'Enders Game',
       author: 'Orson Scott Card',
     };
@@ -255,7 +266,7 @@ describe('/:bookId/delete-book endpoint', () => {
 describe('/user-books/:id endpoint', () => {
   it('Should return all books for a user', (done) => {
     const newBook = {
-      userId: 'Test123',
+      userId: 'testUser',
       title: 'Enders Game',
       author: 'Orson Scott Card',
     };
@@ -282,3 +293,5 @@ describe('/user-books/:id endpoint', () => {
       });
   });
 });
+
+module.exports = { authToken, userId };
