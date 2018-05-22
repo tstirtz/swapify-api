@@ -172,7 +172,7 @@ describe('/book-to-swap end point', () => {
   });
 });
 
-describe.only('/:bookId/delete-book endpoint', () => {
+describe('/:bookId/delete-book endpoint', () => {
   beforeEach(() => {
     const newBook = {
       userId: 'Test123',
