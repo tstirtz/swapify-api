@@ -9,10 +9,10 @@ const { Users } = require('../user/models');
 describe('/search endpoint', () => {
   let userId;
   let authToken;
-  beforeAll(() => {
-    runServer(TEST_DATABASE_URL)
-  });
-  beforeAll(() => {
+
+  beforeAll(() => runServer(TEST_DATABASE_URL, 4000));
+
+  beforeEach((done) => {
     const user = {
       first: 'Test',
       last: 'Test',
@@ -29,9 +29,11 @@ describe('/search endpoint', () => {
             userId = foundUser[0]._id;
             console.log(userId);
           });
+        done();
       });
   });
-  beforeEach(() => {
+
+  beforeEach((done) => {
     const user = {
       username: 'test123',
       _id: userId,
@@ -41,7 +43,9 @@ describe('/search endpoint', () => {
       expiresIn: JWT_EXPIRY,
       algorithm: 'HS256',
     });
+    done();
   });
+
   beforeEach(() => {
     const newBook = {
       userId: 'Test123',
@@ -51,19 +55,26 @@ describe('/search endpoint', () => {
 
     return BookToSwap.create(newBook);
   });
+
   afterEach(() => {
-    console.log('Deleting db');
+    console.log('Deleting books');
     return BookToSwap.deleteMany();
-  })
-  afterAll(() => {
-    closeServer();
   });
-  it('Should return all books in the database', () => {
+
+  afterEach(() => {
+    console.log('Deleting users');
+    return Users.deleteMany();
+  });
+
+  afterAll(() => closeServer());
+
+  test('Should return all books in the database', (done) => {
     return request(app).get('/search')
       .set('Authorization', `Bearer ${authToken}`)
       .then((res) => {
         expect(res.status).toEqual(200);
         expect(res.body.length).toBeGreaterThan(0);
+        done();
       });
   });
 });

@@ -66,7 +66,7 @@ describe('/book-to-swap end point', () => {
     process.exit(1);
   });
 
-  it('should return a book', (done) => {
+  test('should return a book', (done) => {
     console.log(userId);
     const newBook = {
       userId: 'testUser',
@@ -96,7 +96,7 @@ describe('/book-to-swap end point', () => {
         done();
       });
   });
-  it('Should return error message if book already exists for a user', (done) => {
+  test('Should return error message if book already exists for a user', (done) => {
     const newBook = {
       userId,
       title: 'Enders Game',
@@ -116,7 +116,7 @@ describe('/book-to-swap end point', () => {
       .set('Authorization', `Bearer ${authToken}`)
       .then((first) => {
         console.log(first.body);
-        request(app).post('/book-to-swap')
+        return request(app).post('/book-to-swap')
           .send(newBook)
           .set('Authorization', `Bearer ${authToken}`)
           .then((res) => {
@@ -127,7 +127,7 @@ describe('/book-to-swap end point', () => {
           });
       });
   });
-  it('Should return users books', (done) => {
+  test('Should return users books', (done) => {
     console.log(userId);
     const newBook = {
       userId,
@@ -138,7 +138,7 @@ describe('/book-to-swap end point', () => {
       .send(newBook)
       .set('Authorization', `Bearer ${authToken}`)
       .then(() => {
-        request(app).get(`/user-books/${userId}`)
+        return request(app).get(`/user-books/${userId}`)
           .set('Authorization', `Bearer ${authToken}`)
           .then((res) => {
             expect(res.status).toEqual(200);
@@ -147,7 +147,7 @@ describe('/book-to-swap end point', () => {
           });
       });
   });
-  it('Should return empty array if no books are present for a user', (done) => {
+  test('Should return empty array if no books are present for a user', (done) => {
     return request(app).get(`/user-books/${userId}`)
       .set('Authorization', `Bearer ${authToken}`)
       .then((res) => {
@@ -213,7 +213,7 @@ describe('/:bookId/delete-book endpoint', () => {
       .then((res) => {
         console.log(res.body);
       });
-  })
+  });
 
   afterEach(() => {
     console.log('Deleting books');
@@ -231,30 +231,8 @@ describe('/:bookId/delete-book endpoint', () => {
     console.error(reason);
     process.exit(1);
   });
-  // beforeEach(() => {
-  //   const newBook = {
-  //     userId: 'testUser',
-  //     username: 'testUser',
-  //     title: 'Enders Game',
-  //     author: 'Orson Scott Card',
-  //   };
-  //   const user = {
-  //     username: 'testUser',
-  //     _id: userId,
-  //   };
-  //   authToken = jwt.sign({ user }, JWT_SECRET, {
-  //     subject: user.username,
-  //     expiresIn: JWT_EXPIRY,
-  //     algorithm: 'HS256',
-  //   });
-  //   return request(app).post('/book-to-swap')
-  //     .send(newBook)
-  //     .set('Authorization', `Bearer ${authToken}`)
-  //     .then((res) => {
-  //       console.log(res.body);
-  //     });
-  // })
-  it('Should return deleted book object', (done) => {
+
+  test('Should return deleted book object', (done) => {
     let bookId;
     const deletedBook = {
       userId: 'testUser',
@@ -281,7 +259,7 @@ describe('/:bookId/delete-book endpoint', () => {
             return bookId = book[0]._id;
           })
           .then((id) => {
-            request(app).delete(`/${bookId}/delete-book`)
+            return request(app).delete(`/${bookId}/delete-book`)
               .set('Authorization', `Bearer ${authToken}`)
               .then((res) => {
                 // console.log(res);
@@ -292,7 +270,7 @@ describe('/:bookId/delete-book endpoint', () => {
           });
       });
   });
-  it('Should return null if no book is found to delete', (done) => {
+  test('Should return null if no book is found to delete', (done) => {
     const bookId = 'aaaaaaaaaaaaaaaaaaaaaaaa'
     return request(app).delete(`/${bookId}/delete-book`)
       .set('Authorization', `Bearer ${authToken}`)
@@ -303,7 +281,7 @@ describe('/:bookId/delete-book endpoint', () => {
         done();
       });
   });
-  it('Should return unauthorized if jwt is invalid', (done) => {
+  test('Should return unauthorized if jwt is invalid', (done) => {
     let bookId;
     BookToSwap.find({})
       .then((book) => {
@@ -312,7 +290,7 @@ describe('/:bookId/delete-book endpoint', () => {
         return bookId = book[0]._id;
       })
       .then((id) => {
-        request(app).delete(`/${bookId}/delete-book`)
+        return request(app).delete(`/${bookId}/delete-book`)
           .set('Authorization', 'Bearer invalidToken')
           .then((res) => {
             // console.log(res);
@@ -322,7 +300,6 @@ describe('/:bookId/delete-book endpoint', () => {
       });
   });
 });
-
 
 
 describe('/user-books/:id endpoint', () => {
@@ -366,21 +343,6 @@ describe('/user-books/:id endpoint', () => {
       });
   });
 
-  // beforeEach(() => {
-  //   const newBook = {
-  //     userId: 'testUser',
-  //     username: 'testUser',
-  //     title: 'Enders Game',
-  //     author: 'Orson Scott Card',
-  //   };
-  //
-  //   return request(app).post('/book-to-swap')
-  //     .send(newBook)
-  //     .set('Authorization', `Bearer ${authToken}`)
-  //     .then((res) => {
-  //       console.log(res.body);
-  //     });
-  // })
 
   afterEach(() => {
     console.log('Deleting books');
@@ -398,7 +360,7 @@ describe('/user-books/:id endpoint', () => {
     process.exit(1);
   });
 
-  it('Should return all books for a user', (done) => {
+  test('Should return all books for a user', (done) => {
     const newBook = {
       userId: 'testUser',
       title: 'Enders Game',
@@ -410,7 +372,7 @@ describe('/user-books/:id endpoint', () => {
       .set('Authorization', `Bearer ${authToken}`)
       .send(newBook)
       .then(() => {
-        request(app).get(`/user-books/${userId}`)
+        return request(app).get(`/user-books/${userId}`)
           .set('Authorization', `Bearer ${authToken}`)
           .then((res) => {
             expect(res.status).toEqual(200);
@@ -419,10 +381,10 @@ describe('/user-books/:id endpoint', () => {
       });
   });
 
-  it('Should return empty array if no books are found for a user', (done) => {
+  test('Should return empty array if no books are found for a user', (done) => {
     console.log(authToken);
     console.log(userId);
-    request(app).get(`/user-books/${userId}`)
+    return request(app).get(`/user-books/${userId}`)
       .set('Authorization', `Bearer ${authToken}`)
       .then((res) => {
         expect(res.status).toEqual(200);
@@ -432,99 +394,99 @@ describe('/user-books/:id endpoint', () => {
   });
 });
 
-describe('/send-message endpoint', () => {
-  let userId;
-  let authToken;
-
-  beforeAll(() => runServer(TEST_DATABASE_URL, 4000));
-  beforeEach(() => {
-    const user = {
-      first: 'Test',
-      last: 'Test',
-      email: 'test@test.com',
-      username: 'testUser',
-      password: 'anothertest',
-    };
-    return request(app).post('/sign-up')
-      .send(user)
-      .then((res) => {
-        Users.find({})
-          .then((foundUser) => {
-            console.log(foundUser[0]._id);
-            userId = foundUser[0]._id;
-            console.log(userId);
-            return foundUser;
-          });
-      });
-  });
-
-  beforeEach(() => {
-    const userCredentials = {
-      username: 'testUser',
-      password: 'anothertest',
-    }
-
-    return request(app).post('/login')
-      .send(userCredentials)
-      .then((response) => {
-        console.log(response.body);
-        authToken = response.body.jwt;
-        console.log(authToken);
-      });
-  });
-
-  afterEach(() => {
-    console.log('Deleting books');
-    return BookToSwap.deleteMany();
-  });
-  afterEach(() => {
-    console.log('Deleting users');
-    return Users.deleteMany();
-  });
-
-  afterEach(() => {
-    console.log('Deleting messages');
-    return Message.deleteMany();
-  });
-
-  afterAll(() => closeServer());
-
-  process.on('unhandledRejection', (reason) => {
-    console.error(reason);
-    process.exit(1);
-  });
-
-  it('Should create a new message', (done) => {
-    console.log(authToken);
-    const newMessage = {
-      to: 'user123',
-      from: 'testUser',
-      content: 'Hey there',
-      timeStamp: '5/22/2018',
-    }
-
-    return request(app).post('/send-message')
-      .send(newMessage)
-      .set('Authorization', `Bearer ${authToken}`)
-      .then((res) => {
-        expect(res.status).toEqual(200);
-        expect(res.body).toEqual({ message: 'Message sent' });
-        done();
-      });
-  });
-  xit('Should return an error if a field is messing in request body', (done) => {
-    const messageWithMissingField = {
-      from: 'testUser',
-      content: 'Hey there',
-      timeStamp: '5/22/18',
-    };
-
-    return request(app).post('/send-message')
-      .send(messageWithMissingField)
-      .set('Authorization', `Bearer ${authToken}`)
-      .then((res) => {
-        expect(res.status).toEqual(420);
-        done();
-      });
-  });
-});
+// describe('/send-message endpoint', () => {
+//   let userId;
+//   let authToken;
+//
+//   beforeAll(() => runServer(TEST_DATABASE_URL, 4000));
+//   beforeEach(() => {
+//     const user = {
+//       first: 'Test',
+//       last: 'Test',
+//       email: 'test@test.com',
+//       username: 'testUser',
+//       password: 'anothertest',
+//     };
+//     return request(app).post('/sign-up')
+//       .send(user)
+//       .then((res) => {
+//         Users.find({})
+//           .then((foundUser) => {
+//             console.log(foundUser[0]._id);
+//             userId = foundUser[0]._id;
+//             console.log(userId);
+//             return foundUser;
+//           });
+//       });
+//   });
+//
+//   beforeEach(() => {
+//     const userCredentials = {
+//       username: 'testUser',
+//       password: 'anothertest',
+//     }
+//
+//     return request(app).post('/login')
+//       .send(userCredentials)
+//       .then((response) => {
+//         console.log(response.body);
+//         authToken = response.body.jwt;
+//         console.log(authToken);
+//       });
+//   });
+//
+//   afterEach(() => {
+//     console.log('Deleting books');
+//     return BookToSwap.deleteMany();
+//   });
+//   afterEach(() => {
+//     console.log('Deleting users');
+//     return Users.deleteMany();
+//   });
+//
+//   afterEach(() => {
+//     console.log('Deleting messages');
+//     return Message.deleteMany();
+//   });
+//
+//   afterAll(() => closeServer());
+//
+//   process.on('unhandledRejection', (reason) => {
+//     console.error(reason);
+//     process.exit(1);
+//   });
+//
+//   it('Should create a new message', (done) => {
+//     console.log(authToken);
+//     const newMessage = {
+//       to: 'user123',
+//       from: 'testUser',
+//       content: 'Hey there',
+//       timeStamp: '5/22/2018',
+//     }
+//
+//     return request(app).post('/send-message')
+//       .send(newMessage)
+//       .set('Authorization', `Bearer ${authToken}`)
+//       .then((res) => {
+//         expect(res.status).toEqual(200);
+//         expect(res.body).toEqual({ message: 'Message sent' });
+//         done();
+//       });
+//   });
+//   it('Should return an error if a field is messing in request body', (done) => {
+//     const messageWithMissingField = {
+//       from: 'testUser',
+//       content: 'Hey there',
+//       timeStamp: '5/22/18',
+//     };
+//
+//     return request(app).post('/send-message')
+//       .send(messageWithMissingField)
+//       .set('Authorization', `Bearer ${authToken}`)
+//       .then((res) => {
+//         expect(res.status).toEqual(420);
+//         done();
+//       });
+//   });
+// });

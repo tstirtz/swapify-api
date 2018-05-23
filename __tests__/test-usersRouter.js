@@ -5,22 +5,21 @@ const { TEST_DATABASE_URL } = require('../config');
 const { Users } = require('../user/models');
 
 describe('/sign-up end point', () => {
-  beforeAll(() => {
-    return runServer(TEST_DATABASE_URL, 4000);
-  });
-  beforeEach(() => {
+  beforeAll(() => runServer(TEST_DATABASE_URL, 4000));
+
+  afterEach(() => {
     console.log('Deleting db');
     return Users.deleteMany();
   });
-  afterAll(() => {
-    return closeServer();
-  });
+
+  afterAll(() => closeServer());
 
   process.on('unhandledRejection', (reason) => {
     console.error(reason);
     process.exit(1);
   });
-  it('Should return new user', () => {
+
+  test('Should return new user', (done) => {
     const user = {
       first: 'Test',
       last: 'Test',
@@ -35,16 +34,17 @@ describe('/sign-up end point', () => {
       },
       email: 'test@test.com',
       username: 'test123',
-    }
+    };
 
     return request(app).post('/sign-up')
       .send(user)
       .then((res) => {
         expect(res.status).toEqual(201);
         expect(res.body).toEqual(expectedUser);
+        done();
       });
   });
-  it('Should return error due to missing field', () => {
+  test('Should return error due to missing field', (done) => {
     const user = {
       last: 'Test',
       email: 'test@test.com',
@@ -56,10 +56,11 @@ describe('/sign-up end point', () => {
       .send(user)
       .then((res) => {
         expect(res.status).toEqual(422);
+        done();
       });
   });
 
-  it('Should return error for password with leading or trailing whitespace', () => {
+  test('Should return error for password with leading or trailing whitespace', (done) => {
     const user = {
       first: 'Test',
       last: 'Test',
@@ -72,9 +73,11 @@ describe('/sign-up end point', () => {
       .then((res) => {
         expect(res.status).toEqual(422);
         expect(res.body.message).toContain('Cannot start or end with whitespace');
+        done();
       });
   });
-  it('Should return error if password is too long', () => {
+
+  test('Should return error if password is too long', (done) => {
     let tooLargePassword = '';
     for (let i = 0; i < 73; i += 1) {
       tooLargePassword += 't';
@@ -91,9 +94,10 @@ describe('/sign-up end point', () => {
       .then((res) => {
         expect(res.status).toEqual(422);
         expect(res.body.message).toContain('Password must not be more than 72 characterslong');
+        done();
       });
   });
-  it('Should return error if password is too short', () => {
+  test('Should return error if password is too short', (done) => {
     const user = {
       first: 'Test',
       last: 'Test',
@@ -106,6 +110,7 @@ describe('/sign-up end point', () => {
       .then((res) => {
         expect(res.status).toEqual(422);
         expect(res.body.message).toContain('Password must be at least 10 characters long');
+        done();
       });
   });
   // it('Should return error if username is already taken', () => {
