@@ -12,15 +12,27 @@ passport.use(jwtStrategy);
 
 router.post('/', jwtAuth, (req, res) => {
   const requiredFields = ['to', 'from', 'content', 'timeStamp'];
-  requiredFields.forEach((field) => {
-    if (!(field in req.body)) {
+  // requiredFields.forEach((field) => {
+  //   if (!(field in req.body)) {
+  //     return res.status(422).json({
+  //       code: 422,
+  //       reason: 'ValidationError',
+  //       message: `Missing '${field}' field`,
+  //       location: `${field}`,
+  //     });
+  //   }
+  //   // return console.log(`${field} present`);
+  // });
+  for (let i = 0; i < requiredFields.length; i += i) {
+    if (!(requiredFields[i] in req.body)) {
       return res.status(422).json({
         code: 422,
         reason: 'ValidationError',
-        message: `Missing '${field}' field`,
+        message: `Missing '${requiredFields[i]}' field`,
+        location: `${requiredFields[i]}`,
       });
     }
-  });
+  }
   Message.create({
     to: req.body.to,
     from: req.body.from,
@@ -30,7 +42,7 @@ router.post('/', jwtAuth, (req, res) => {
     .then(() => res.status(200).json({ message: 'Message sent' }))
     .catch((err) => {
       if (err.reason === 'ValidationError') {
-        return res.status(err.code).json(err);
+        return res.status(err.code).json(err.message);
       }
       return res.status(500).json({ code: 500, message: 'Internal server error' });
     });
