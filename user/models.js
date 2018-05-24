@@ -27,7 +27,7 @@ userSchema.methods.serialize = function () {
 userSchema.methods.forAuthToken = function () {
   return {
     username: this.username,
-    _id: this._id
+    _id: this._id,
   };
 };
 
