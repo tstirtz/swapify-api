@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "jest --runInBand --watch --onlyChanged",
+    "test": "jest --runInBand --watch",
     "lint": "eslint src"
   },
   "author": "",
