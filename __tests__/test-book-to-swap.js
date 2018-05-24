@@ -6,7 +6,7 @@ const { TEST_DATABASE_URL, JWT_SECRET, JWT_EXPIRY } = require('../config');
 const { BookToSwap } = require('../user-books/book-swap-model');
 const { Users } = require('../user/models');
 
-describe('/book-to-swap end point', () => {
+xdescribe('/book-to-swap end point', () => {
   let userId;
   let authToken;
 
