@@ -10,20 +10,11 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 
 passport.use(jwtStrategy);
 
-router.post('/', jwtAuth, (req, res) => {
+router.post('/', (req, res) => {
+  console.log('Request made to /send-message');
   const requiredFields = ['to', 'from', 'content', 'timeStamp'];
-  // requiredFields.forEach((field) => {
-  //   if (!(field in req.body)) {
-  //     return res.status(422).json({
-  //       code: 422,
-  //       reason: 'ValidationError',
-  //       message: `Missing '${field}' field`,
-  //       location: `${field}`,
-  //     });
-  //   }
-  //   // return console.log(`${field} present`);
-  // });
-  for (let i = 0; i < requiredFields.length; i += i) {
+  for (let i = 0; i < requiredFields.length; i += 1) {
+    console.log(requiredFields[i]);
     if (!(requiredFields[i] in req.body)) {
       return res.status(422).json({
         code: 422,
@@ -33,7 +24,7 @@ router.post('/', jwtAuth, (req, res) => {
       });
     }
   }
-  Message.create({
+  return Message.create({
     to: req.body.to,
     from: req.body.from,
     content: req.body.content,
