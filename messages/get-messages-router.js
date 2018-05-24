@@ -12,7 +12,7 @@ passport.use(jwtStrategy);
 
 router.get('/', jwtAuth, (req, res) => {
   console.log(req.params.username);
-  if (req.params.username === undefined) {
+  if (req.params.username === 'undefined') {
     return res.status(422).json({ message: 'Username parameter is undefined, please try again.' });
   }
   return Message.find({ $or: [{ to: `${req.params.username}` }, { from: `${req.params.username}` }] })
