@@ -113,20 +113,23 @@ describe('/sign-up end point', () => {
         done();
       });
   });
-  // it('Should return error if username is already taken', () => {
-  //   const user = {
-  //     firstName: 'Test',
-  //     lastName: 'Test',
-  //     email: 'test@test.com',
-  //     username: 'test123',
-  //     password: 'anothertest',
-  //   };
-  //
-  //   return request(app).post('/sign-up')
-  //     .send(user)
-  //     .then(() =>
-  //       request(app).post('/sign-up')
-  //         .send(user)
-  //         .then(res => expect(res.status).toEqual(422)))
-  // });
+  test('Should return error if username is already taken', (done) => {
+    const user = {
+      firstName: 'Test',
+      lastName: 'Test',
+      email: 'test@test.com',
+      username: 'test123',
+      password: 'anothertest',
+    };
+
+    return request(app).post('/sign-up')
+      .send(user)
+      .then(() =>
+        request(app).post('/sign-up')
+          .send(user)
+          .then((res) => {
+            expect(res.status).toEqual(422);
+            done();
+          }));
+  });
 });
