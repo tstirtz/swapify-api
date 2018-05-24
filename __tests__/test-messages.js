@@ -12,7 +12,7 @@ describe('/send-message endpoint', () => {
   let authToken;
 
   beforeAll(() => runServer(TEST_DATABASE_URL, 4000));
-  beforeEach(() => {
+  beforeEach((done) => {
     const user = {
       first: 'Test',
       last: 'Test',
@@ -28,7 +28,7 @@ describe('/send-message endpoint', () => {
             console.log(foundUser[0]._id);
             userId = foundUser[0]._id;
             console.log(userId);
-            return foundUser;
+            done();
           });
       });
   });
@@ -37,7 +37,7 @@ describe('/send-message endpoint', () => {
     const userCredentials = {
       username: 'testUser',
       password: 'anothertest',
-    }
+    };
 
     return request(app).post('/login')
       .send(userCredentials)
@@ -52,9 +52,10 @@ describe('/send-message endpoint', () => {
     console.log('Deleting books');
     return BookToSwap.deleteMany();
   });
+
   afterEach(() => {
     console.log('Deleting users');
-    return Users.deleteMany();
+    return Users.deleteMany()
   });
 
   afterEach(() => {
@@ -69,25 +70,25 @@ describe('/send-message endpoint', () => {
     process.exit(1);
   });
 
-  it('Should create a new message', (done) => {
-    console.log(authToken);
+  test('Should create a new message', (done) => {
     const newMessage = {
-      to: 'user123',
+      to: 'otherUser',
       from: 'testUser',
       content: 'Hey there',
-      timeStamp: '5/22/2018',
-    }
+      timeStamp: '5/22/18',
+    };
 
     return request(app).post('/send-message')
-      .send(newMessage)
       .set('Authorization', `Bearer ${authToken}`)
+      .send(newMessage)
       .then((res) => {
         expect(res.status).toEqual(200);
         expect(res.body).toEqual({ message: 'Message sent' });
         done();
       });
   });
-  it('Should return an error if a field is messing in request body', (done) => {
+
+  test('Should return an error if a field is missing in request body', (done) => {
     const messageWithMissingField = {
       from: 'testUser',
       content: 'Hey there',
