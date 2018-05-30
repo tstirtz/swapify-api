@@ -2,7 +2,7 @@ const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const app = require('../app');
 const { runServer, closeServer } = require('../server');
-const { TEST_DATABASE_URL, JWT_SECRET, JWT_EXPIRY } = require('../config');
+const { TEST_DATABASE_URL } = require('../config');
 const { BookToSwap } = require('../user-books/book-swap-model');
 const { Users } = require('../user/models');
 
@@ -24,9 +24,7 @@ xdescribe('/book-to-swap end point', () => {
       .then((res) => {
         Users.find({})
           .then((foundUser) => {
-            console.log(foundUser[0]._id);
             userId = foundUser[0]._id;
-            console.log(userId);
             return foundUser;
           });
       });
@@ -41,9 +39,7 @@ xdescribe('/book-to-swap end point', () => {
     return request(app).post('/login')
       .send(userCredentials)
       .then((response) => {
-        console.log(response.body);
         authToken = response.body.jwt;
-        console.log(authToken);
       });
   });
 
@@ -65,7 +61,6 @@ xdescribe('/book-to-swap end point', () => {
   });
 
   test('should return a book', (done) => {
-    console.log(userId);
     const newBook = {
       userId: 'testUser',
       title: 'Enders Game',
@@ -75,15 +70,6 @@ xdescribe('/book-to-swap end point', () => {
       title: 'Enders Game',
       author: 'Orson Scott Card',
     };
-    // const user = {
-    //   username: 'testUser',
-    //   _id: userId,
-    // };
-    // authToken = jwt.sign({ user }, JWT_SECRET, {
-    //   subject: user.username,
-    //   expiresIn: JWT_EXPIRY,
-    //   algorithm: 'HS256',
-    // });
 
     return request(app).post('/book-to-swap')
       .send(newBook)
@@ -100,25 +86,14 @@ xdescribe('/book-to-swap end point', () => {
       title: 'Enders Game',
       author: 'Orson Scott Card',
     };
-    // const user = {
-    //   username: 'testUser',
-    //   _id: userId,
-    // };
-    // const authToken = jwt.sign({ user }, JWT_SECRET, {
-    //   subject: user.username,
-    //   expiresIn: JWT_EXPIRY,
-    //   algorithm: 'HS256',
-    // });
     return request(app).post('/book-to-swap')
       .send(newBook)
       .set('Authorization', `Bearer ${authToken}`)
-      .then((first) => {
-        console.log(first.body);
+      .then(() => {
         return request(app).post('/book-to-swap')
           .send(newBook)
           .set('Authorization', `Bearer ${authToken}`)
           .then((res) => {
-            console.log(res.body);
             expect(res.status).toEqual(422);
             expect(res.body.message).toContain('Already exists as a');
             done();
@@ -126,7 +101,6 @@ xdescribe('/book-to-swap end point', () => {
       });
   });
   test('Should return users books', (done) => {
-    console.log(userId);
     const newBook = {
       userId,
       title: 'Enders Game',
@@ -145,12 +119,11 @@ xdescribe('/book-to-swap end point', () => {
           });
       });
   });
-  test('Should return empty array if no books are present for a user', (done) => {
-    return request(app).get(`/user-books/${userId}`)
+  test('Should return empty array if no books are present for a user', done =>
+    request(app).get(`/user-books/${userId}`)
       .set('Authorization', `Bearer ${authToken}`)
       .then((res) => {
         expect(res.body).toEqual([]);
         done();
-      });
-  });
+      }));
 });

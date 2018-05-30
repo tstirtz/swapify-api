@@ -1,11 +1,9 @@
 const request = require('supertest');
-const jwt = require('jsonwebtoken');
 const app = require('../app');
 const { runServer, closeServer } = require('../server');
-const { TEST_DATABASE_URL, JWT_SECRET, JWT_EXPIRY } = require('../config');
+const { TEST_DATABASE_URL } = require('../config');
 const { BookToSwap } = require('../user-books/book-swap-model');
 const { Users } = require('../user/models');
-const { Message } = require('../messages/message-model');
 
 
 describe('/:bookId/delete-book endpoint', () => {
@@ -26,9 +24,7 @@ describe('/:bookId/delete-book endpoint', () => {
       .then((res) => {
         Users.find({})
           .then((foundUser) => {
-            console.log(foundUser[0]._id);
             userId = foundUser[0]._id;
-            console.log(userId);
             return foundUser;
           });
       });
@@ -43,9 +39,7 @@ describe('/:bookId/delete-book endpoint', () => {
     return request(app).post('/login')
       .send(userCredentials)
       .then((response) => {
-        console.log(response.body);
         authToken = response.body.jwt;
-        console.log(authToken);
       });
   });
 
@@ -96,23 +90,18 @@ describe('/:bookId/delete-book endpoint', () => {
       title: 'Enders Game',
       author: 'Orson Scott Card',
     };
-    console.log(authToken);
-    console.log(userId);
     return request(app).post('/book-to-swap')
       .set('Authorization', `Bearer ${authToken}`)
       .send(newBook)
       .then(() => {
         BookToSwap.find({})
           .then((book) => {
-            console.log(book);
-            console.log(book[0]._id);
             return bookId = book[0]._id;
           })
           .then((id) => {
             return request(app).delete(`/${bookId}/delete-book`)
               .set('Authorization', `Bearer ${authToken}`)
               .then((res) => {
-                // console.log(res);
                 expect(res.status).toEqual(200);
                 expect(res.body).toEqual(deletedBook);
                 done();
@@ -125,7 +114,6 @@ describe('/:bookId/delete-book endpoint', () => {
     return request(app).delete(`/${bookId}/delete-book`)
       .set('Authorization', `Bearer ${authToken}`)
       .then((res) => {
-        console.log(res.body);
         expect(res.status).toEqual(200);
         expect(res.body).toEqual({});
         done();
@@ -135,15 +123,12 @@ describe('/:bookId/delete-book endpoint', () => {
     let bookId;
     BookToSwap.find({})
       .then((book) => {
-        console.log(book);
-        console.log(book[0]._id);
         return bookId = book[0]._id;
       })
       .then((id) => {
         return request(app).delete(`/${bookId}/delete-book`)
           .set('Authorization', 'Bearer invalidToken')
           .then((res) => {
-            // console.log(res);
             expect(res.status).toEqual(401);
             done();
           });
