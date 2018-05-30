@@ -3,7 +3,6 @@ const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 const { Users } = require('../user/models');
 const { JWT_SECRET } = require('../config');
 
-// strategy used for authorization of /login endpoint
 const localStrategy = new LocalStrategy ((username, password, done) => {
   let user;
   Users.findOne({ username })
@@ -30,7 +29,6 @@ const localStrategy = new LocalStrategy ((username, password, done) => {
       if (err.reason === 'LoginError') {
         return done(null, false, err);
       }
-      console.log(err);
       return done(err, false);
     });
 });
