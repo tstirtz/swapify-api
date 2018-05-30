@@ -10,11 +10,9 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 
 passport.use(jwtStrategy);
 
-router.post('/', (req, res) => {
-  console.log('Request made to /send-message');
+router.post('/', jwtAuth, (req, res) => {
   const requiredFields = ['to', 'from', 'content', 'timeStamp'];
   for (let i = 0; i < requiredFields.length; i += 1) {
-    console.log(requiredFields[i]);
     if (!(requiredFields[i] in req.body)) {
       return res.status(422).json({
         code: 422,
