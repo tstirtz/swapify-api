@@ -1,8 +1,7 @@
 const request = require('supertest');
-const jwt = require('jsonwebtoken');
 const app = require('../app');
 const { runServer, closeServer } = require('../server');
-const { TEST_DATABASE_URL, JWT_SECRET, JWT_EXPIRY } = require('../config');
+const { TEST_DATABASE_URL } = require('../config');
 const { BookToSwap } = require('../user-books/book-swap-model');
 const { Users } = require('../user/models');
 const { Message } = require('../messages/message-model');
@@ -25,9 +24,7 @@ describe('/:username/messages endpoint', () => {
       .then((res) => {
         Users.find({})
           .then((foundUser) => {
-            console.log(foundUser[0]._id);
             userId = foundUser[0]._id;
-            console.log(userId);
             return foundUser;
           });
       });
@@ -42,9 +39,7 @@ describe('/:username/messages endpoint', () => {
     return request(app).post('/login')
       .send(userCredentials)
       .then((response) => {
-        console.log(response.body);
         authToken = response.body.jwt;
-        console.log(authToken);
       });
   });
 

@@ -1,11 +1,9 @@
 const request = require('supertest');
-const jwt = require('jsonwebtoken');
 const app = require('../app');
 const { runServer, closeServer } = require('../server');
-const { TEST_DATABASE_URL, JWT_SECRET, JWT_EXPIRY } = require('../config');
+const { TEST_DATABASE_URL } = require('../config');
 const { BookToSwap } = require('../user-books/book-swap-model');
 const { Users } = require('../user/models');
-const { Message } = require('../messages/message-model');
 
 describe('/user-books/:id endpoint', () => {
   let userId;
@@ -22,12 +20,10 @@ describe('/user-books/:id endpoint', () => {
     };
     return request(app).post('/sign-up')
       .send(user)
-      .then((res) => {
+      .then(() => {
         Users.find({})
           .then((foundUser) => {
-            console.log(foundUser[0]._id);
             userId = foundUser[0]._id;
-            console.log(userId);
             return foundUser;
           });
       });
@@ -42,9 +38,7 @@ describe('/user-books/:id endpoint', () => {
     return request(app).post('/login')
       .send(userCredentials)
       .then((response) => {
-        console.log(response.body);
         authToken = response.body.jwt;
-        console.log(authToken);
       });
   });
 
@@ -71,8 +65,6 @@ describe('/user-books/:id endpoint', () => {
       title: 'Enders Game',
       author: 'Orson Scott Card',
     };
-    console.log(authToken);
-    console.log(userId);
     return request(app).post('/book-to-swap')
       .set('Authorization', `Bearer ${authToken}`)
       .send(newBook)
@@ -87,8 +79,6 @@ describe('/user-books/:id endpoint', () => {
   });
 
   test('Should return empty array if no books are found for a user', (done) => {
-    console.log(authToken);
-    console.log(userId);
     return request(app).get(`/user-books/${userId}`)
       .set('Authorization', `Bearer ${authToken}`)
       .then((res) => {

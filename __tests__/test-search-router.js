@@ -25,9 +25,7 @@ describe('/search endpoint', () => {
       .then((res) => {
         Users.find({})
           .then((foundUser) => {
-            console.log(foundUser[0]._id);
             userId = foundUser[0]._id;
-            console.log(userId);
           });
         done();
       });
