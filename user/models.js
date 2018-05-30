@@ -31,9 +31,9 @@ userSchema.methods.forAuthToken = function () {
   };
 };
 
-userSchema.methods.validatePassword = function(password) {
+userSchema.methods.validatePassword = function (password) {
   return bcrypt.compare(password, this.password);
-}
+};
 
 userSchema.statics.hashPassword = password => bcrypt.hash(password, 10);
 

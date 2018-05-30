@@ -61,7 +61,6 @@ router.post('/', jsonParser, (req, res) => {
   }
   return Users
     .find({ username: req.body.username })
-    // .count()
     .then((users) => {
       if (users.length > 0) {
         return Promise.reject({
@@ -71,8 +70,6 @@ router.post('/', jsonParser, (req, res) => {
           location: 'username',
         });
       }
-      // hashPassword is a static function defined on the userSchema which
-      // uses bcryptjs to hash the password
       return Users.hashPassword(req.body.password);
     })
     .then(hash =>
@@ -90,7 +87,7 @@ router.post('/', jsonParser, (req, res) => {
       if (err.reason === 'ValidationError') {
         return res.status(err.code).json(err);
       }
-      res.status(500).send({ code: 500, message: 'Internal server error' });
+      return res.status(500).send({ code: 500, message: 'Internal server error' });
     });
 });
 module.exports = router;
