@@ -24,24 +24,24 @@ passport.use(localStrategy);
 app.use(morgan('common'));
 morganBody(app);
 
-const corsOptions = {
-  origin: CLIENT_ORIGIN,
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
+// let corsOptions = {
+//   origin: CLIENT_ORIGIN,
+//   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+// }
 
-// app.use(cors({ origin: [CLIENT_ORIGIN, 'http://localhost:3000'] }));
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.status(200).send('Hello World!');
 });
 
-app.use('/sign-up', cors(corsOptions), usersRouter);
-app.use('/login', cors(corsOptions), jsonParser, loginRouter);
-app.use('/book-to-swap', cors(corsOptions), jsonParser, bookToSwapRouter);
-app.use('/user-books/:id', cors(corsOptions), getUserBooksRouter);
-app.use('/search', cors(corsOptions), searchRouter);
-app.use('/send-message', cors(corsOptions), jsonParser, sendMessageRouter);
-app.use('/:username/messages', cors(corsOptions), getMessagesRouter);
-app.use('/:bookId/delete-book', cors(corsOptions), deleteBookRouter);
+app.use('/sign-up', usersRouter);
+app.use('/login', jsonParser, loginRouter);
+app.use('/book-to-swap', jsonParser, bookToSwapRouter);
+app.use('/user-books/:id', getUserBooksRouter);
+app.use('/search', searchRouter);
+app.use('/send-message', jsonParser, sendMessageRouter);
+app.use('/:username/messages', getMessagesRouter);
+app.use('/:bookId/delete-book', deleteBookRouter);
 
 module.exports = app;
